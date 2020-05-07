@@ -12,12 +12,12 @@ import { DbModule } from 'src/db/db.module';
         transport: Transport.REDIS,
         options: {
           url: 'redis://10.0.0.78:6379',
-        }
+        },
       },
     ]),
-    DbModule
+    DbModule,
   ],
   providers: [RedisService],
-  controllers: [RedisController]
+  controllers: [RedisController],
 })
 export class RedisModule {}

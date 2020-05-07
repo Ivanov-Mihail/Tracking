@@ -8,6 +8,6 @@ import { ReportSchema } from './schema/report.schema';
     MongooseModule.forFeature([{ name: 'Report', schema: ReportSchema }]),
   ],
   providers: [DbService],
-  exports: [DbService]
+  exports: [DbService],
 })
 export class DbModule {}
