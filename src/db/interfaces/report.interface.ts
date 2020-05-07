@@ -6,5 +6,5 @@ export interface Report extends Document {
   accuracy: number;
   speed: number;
   direction: number;
-  time: number;
+  time: Date;
 }

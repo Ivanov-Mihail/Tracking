@@ -7,6 +7,7 @@ import {
 } from '@nestjs/microservices';
 import { ReportDTO } from 'src/db/dto/report.dto';
 import { DbService } from 'src/db/db.service';
+import { ReportMsg } from 'src/db/dto/reportMsg';
 
 @Controller('redis')
 export class RedisController {
@@ -14,14 +15,13 @@ export class RedisController {
 
   @MessagePattern('tracking.newreport')
   async getNotifications(
-    @Payload() data: ReportDTO,
+    @Payload() dataArray: ReportMsg,
     @Ctx() context: RedisContext,
   ) {
     console.log(`Channel: ${context.getChannel()}`);
-    console.log(`Data: ${JSON.stringify(data)}`);
-    console.log(`Data: ${data}`);
-
-    await this.reportService.saveReport(data);
+    console.log(`Data: ${JSON.stringify(dataArray)}`);
+    console.log(`Data: ${dataArray}`);
+    dataArray.data.forEach(data=>this.reportService.saveReport(data));
   }
 
   @Post()
