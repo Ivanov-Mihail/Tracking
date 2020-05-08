@@ -5,28 +5,27 @@ import {
   Payload,
   MessagePattern,
 } from '@nestjs/microservices';
-import { ReportDTO } from 'src/db/dto/report.dto';
 import { DbService } from 'src/db/db.service';
-import { ReportMsg } from 'src/db/dto/reportMsg';
+import { PublisherPositionDTO } from 'src/db/dto/publisher-pos-dto';
 
 @Controller('redis')
 export class RedisController {
   constructor(private readonly reportService: DbService) {}
 
   @MessagePattern('tracking.newreport')
-  async getNotifications(
-    @Payload() dataArray: ReportMsg,
+  getNotifications(
+    @Payload() dataArray: PublisherPositionDTO,
     @Ctx() context: RedisContext,
   ) {
+    console.log(`Data: ${dataArray}`);
     console.log(`Channel: ${context.getChannel()}`);
     console.log(`Data: ${JSON.stringify(dataArray)}`);
-    console.log(`Data: ${dataArray}`);
-    dataArray.data.forEach(data=>this.reportService.saveReport(data));
+    this.reportService.saveReport(dataArray);
   }
 
   @Post()
-  async create(@Body('report') report: ReportDTO) {
+  async create(@Body('report') report: PublisherPositionDTO) {
     console.log(`reportDTO: ${JSON.stringify(report)}`);
-    await this.reportService.saveReport(report);
+    this.reportService.saveReport(report);
   }
 }
