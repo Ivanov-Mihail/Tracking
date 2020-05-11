@@ -24,8 +24,9 @@ export class RedisController {
   }
 
   @Post()
-  async create(@Body('report') report: PublisherPositionDTO) {
+  async create(@Body() report: PublisherPositionDTO) {
     console.log(`reportDTO: ${JSON.stringify(report)}`);
+    console.log(`Data: ${report}`);
     this.reportService.saveReport(report);
   }
 }

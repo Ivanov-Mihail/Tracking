@@ -11,13 +11,19 @@ interface Index {
 
 @Injectable()
 export class DbService {
-  constructor(
-    @InjectModel('Publisher') private reportModel: Model<Publisher>,
-  ) {}
+  constructor(@InjectModel('Publisher') private reportModel: Model<Publisher>,) {}
+  
+  //
+  async saveReport(@Body() publisherPosition: PublisherPositionDTO) {
+    const preparedToSave = await this.parseGeoPointToH3(publisherPosition);
+    console.log(preparedToSave);
+    const newrep = new this.reportModel(preparedToSave);
+    const result = await newrep.save();
+    console.log(result);
+  }
 
-  // не знаю как будет работать Асинхронность.
-  // преобазование DTO в Модель
-  private async parseGeoPointToH3(
+   //
+   private async parseGeoPointToH3(
     publisherPosition: PublisherPositionDTO,
   ): Promise<PublisherPositionDTO> {
     const temp: PublisherPositionDTO & Index = Object.assign(
@@ -31,15 +37,6 @@ export class DbService {
     });
 
     return publisherPosition;
-  }
-
-  async saveReport(@Body() publisherPosition: PublisherPositionDTO) {
-    const preparedToSave = await this.parseGeoPointToH3(publisherPosition);
-
-    console.log(preparedToSave);
-    const newrep = new this.reportModel(preparedToSave);
-    const result = await newrep.save();
-    console.log(result);
   }
 
   // async getAllReportByUser(@Body() reportDto: GeoPointDTO): Promise<Report> {

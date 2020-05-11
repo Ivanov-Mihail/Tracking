@@ -6,6 +6,5 @@ export interface GeoPointDTO {
   speed: number;
   direction: number;
   time: Date;
-  //['index']: string;
   index: string;
 }
