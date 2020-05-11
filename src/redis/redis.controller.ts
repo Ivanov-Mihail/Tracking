@@ -13,7 +13,7 @@ export class RedisController {
   constructor(private readonly reportService: DbService) {}
 
   @MessagePattern('tracking.newreport')
-  getNotifications(
+  addPosition(
     @Payload() dataArray: PublisherPositionDTO,
     @Ctx() context: RedisContext,
   ) {
