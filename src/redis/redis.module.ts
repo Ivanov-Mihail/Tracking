@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { RedisService } from './redis.service';
-import { RedisController } from './redis.controller';
+import { GeolocationController } from './redis.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { DbModule } from 'src/db/db.module';
 
@@ -18,6 +18,6 @@ import { DbModule } from 'src/db/db.module';
     DbModule,
   ],
   providers: [RedisService],
-  controllers: [RedisController],
+  controllers: [GeolocationController],
 })
 export class RedisModule {}

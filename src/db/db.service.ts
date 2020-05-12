@@ -1,9 +1,13 @@
-import { Injectable, Body } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import * as h3 from 'h3-js';
 import { PublisherPositionDTO } from './dto/publisher-pos-dto';
-import { Publisher } from './interfaces/point.interface';
+import { Publisher } from './interfaces/publisher.inteface';
+import { GeoPointDTO } from './dto/geo_point.dto';
+import { Point } from './interfaces/point.interface';
+import { SubscriberDTO } from './dto/subscriber.dto';
+import { Subscriber } from './interfaces/subscriber.interface';
 
 interface Index {
   index: string;
@@ -11,36 +15,61 @@ interface Index {
 
 @Injectable()
 export class DbService {
-  constructor(@InjectModel('Publisher') private reportModel: Model<Publisher>,) {}
-  
-  //
-  async saveReport(@Body() publisherPosition: PublisherPositionDTO) {
-    const preparedToSave = await this.parseGeoPointToH3(publisherPosition);
-    console.log(preparedToSave);
-    const newrep = new this.reportModel(preparedToSave);
-    const result = await newrep.save();
-    console.log(result);
+  constructor(
+    @InjectModel('Publisher') private publisherModel: Model<Publisher>,
+    @InjectModel('Point') private pointModel: Model<Point>,
+    @InjectModel('Subscriber') private subscriberModel: Model<Subscriber>,
+  ) {}
+
+  private pubs: Publisher[] = [];
+
+  async GetAllPublishers(): Promise<Publisher[]> {
+    const publishers = await this.publisherModel.find().exec();
+
+    return publishers;
   }
 
-   //
-   private async parseGeoPointToH3(
-    publisherPosition: PublisherPositionDTO,
-  ): Promise<PublisherPositionDTO> {
-    const temp: PublisherPositionDTO & Index = Object.assign(
-      { index: 'asd' },
-      publisherPosition,
-    );
+  async GetPublisherById(publisherId: string): Promise<Publisher> {
+    const publisher = await this.publisherModel.findById(publisherId);
+    return publisher;
+  }
 
-    temp.data.forEach(point => {
-      // тут должно появится поле индекс
+  async GetSubscribers(publisherId: string) : Promise<Subscriber[]>{
+    const publisher: Publisher = await this.GetPublisherById(publisherId);
+    const subscribers: Subscriber[] = publisher.follower;
+    return subscribers
+  }
+
+  async AddPublsiher(publisherDTO: PublisherPositionDTO): Promise<Publisher> {
+ 
+    publisherDTO.data.forEach(point => {
       point.index = h3.geoToH3(point.latitude, point.longitude, 7);
     });
 
-    return publisherPosition;
+    const result = new this.publisherModel(publisherDTO).save();
+    console.log(result);
+    return result;
   }
 
-  // async getAllReportByUser(@Body() reportDto: GeoPointDTO): Promise<Report> {
-  //return this.reportModel.find(r=> this.reportModel === ).exec();
-  //   return null;
-  // }
+  async AddPoint(point: GeoPointDTO): Promise<Point> {
+    const result = new this.pointModel(point).save();
+    console.log(result);
+    return result;
+  } 
+
+  async AddSubscriber(subscriberDTO: SubscriberDTO){
+    const result = new this.subscriberModel(subscriberDTO).save();
+    console.log(result);
+  }
+
+  async DeleteSubscriber (subscriberDTO: SubscriberDTO){
+    const result = new this.subscriberModel(subscriberDTO).remove();
+    console.log(result);
+  }
+
+  async DeletePublisher (publisherDTO: PublisherPositionDTO){
+    const result = new this.publisherModel(publisherDTO).remove();
+    console.log(result);
+  }
+
 }

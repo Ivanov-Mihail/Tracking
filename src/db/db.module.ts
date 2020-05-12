@@ -3,10 +3,15 @@ import { DbService } from './db.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PublisherSchema } from './schema/publisher.schema';
 import { PointSchema } from './schema/point.schema';
+import { SubscriberSchema } from './schema/subscriber.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: 'Publisher', schema: PublisherSchema },{ name: 'Point', schema: PointSchema }],),
+    MongooseModule.forFeature([
+      { name: 'Publisher', schema: PublisherSchema },
+      { name: 'Point', schema: PointSchema },
+      {name: 'Subscriber', schema: SubscriberSchema },
+    ],),
   ],
   providers: [DbService],
   exports: [DbService],

@@ -1,4 +1,4 @@
-export interface GeoPointDTO {
+export class GeoPointDTO {
   id: number;
   latitude: number;
   longitude: number;
