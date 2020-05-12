@@ -25,7 +25,6 @@ export class DbService {
 
   async GetAllPublishers(): Promise<Publisher[]> {
     const publishers = await this.publisherModel.find().exec();
-
     return publishers;
   }
 
@@ -34,42 +33,40 @@ export class DbService {
     return publisher;
   }
 
-  async GetSubscribers(publisherId: string) : Promise<Subscriber[]>{
+  async GetSubscribers(publisherId: string): Promise<Subscriber[]> {
     const publisher: Publisher = await this.GetPublisherById(publisherId);
     const subscribers: Subscriber[] = publisher.follower;
-    return subscribers
+    return subscribers;
   }
 
   async AddPublsiher(publisherDTO: PublisherPositionDTO): Promise<Publisher> {
- 
     publisherDTO.data.forEach(point => {
       point.index = h3.geoToH3(point.latitude, point.longitude, 7);
     });
 
-    const result = new this.publisherModel(publisherDTO).save();
+    const result = await new this.publisherModel(publisherDTO).save();
     console.log(result);
     return result;
   }
 
   async AddPoint(point: GeoPointDTO): Promise<Point> {
-    const result = new this.pointModel(point).save();
+    const result = await new this.pointModel(point).save();
     console.log(result);
     return result;
-  } 
+  }
 
-  async AddSubscriber(subscriberDTO: SubscriberDTO){
-    const result = new this.subscriberModel(subscriberDTO).save();
+  async AddSubscriber(subscriberDTO: SubscriberDTO) {
+    const result = await new this.subscriberModel(subscriberDTO).save();
     console.log(result);
   }
 
-  async DeleteSubscriber (subscriberDTO: SubscriberDTO){
-    const result = new this.subscriberModel(subscriberDTO).remove();
+  async DeleteSubscriber(subscriberDTO: SubscriberDTO) {
+    const result = await new this.subscriberModel(subscriberDTO).remove();
     console.log(result);
   }
 
-  async DeletePublisher (publisherDTO: PublisherPositionDTO){
-    const result = new this.publisherModel(publisherDTO).remove();
+  async DeletePublisher(publisherDTO: PublisherPositionDTO) {
+    const result = await new this.publisherModel(publisherDTO).remove();
     console.log(result);
   }
-
 }
