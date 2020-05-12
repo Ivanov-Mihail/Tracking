@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { RedisService } from './redis.service';
-import { GeolocationController } from './redis.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { DbModule } from 'src/db/db.module';
+import { TrackingService } from './tracking.service';
+import { TrackingController } from './tracking.controller';
 
 @Module({
   imports: [
@@ -17,7 +17,7 @@ import { DbModule } from 'src/db/db.module';
     ]),
     DbModule,
   ],
-  providers: [RedisService],
-  controllers: [GeolocationController],
+  providers: [TrackingService],
+  controllers: [TrackingController],
 })
-export class RedisModule {}
+export class TrackingModule {}

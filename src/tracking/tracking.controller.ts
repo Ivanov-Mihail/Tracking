@@ -14,12 +14,12 @@ import { GeoPointDTO } from 'src/db/dto/geo_point.dto';
 import { SubscriberDTO } from 'src/db/dto/subscriber.dto';
 import { Subscriber } from 'src/db/interfaces/subscriber.interface';
 
-@Controller('geolocation')
-export class GeolocationController {
+@Controller('tracking')
+export class TrackingController {
   constructor(private readonly dbService: DbService) {}
   private timeNow: Date = new Date(Date.now());
 
-  private readonly logger = new Logger('RedisController', false);
+  private readonly logger = new Logger('TrackingController', false);
 
   @Get('/publisher') // localhost:3001/geolocation/publisher
   async GetAllPublishers(): Promise<Publisher[]> {

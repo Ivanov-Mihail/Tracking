@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import * as h3 from 'h3-js';
@@ -8,10 +8,7 @@ import { GeoPointDTO } from './dto/geo_point.dto';
 import { Point } from './interfaces/point.interface';
 import { SubscriberDTO } from './dto/subscriber.dto';
 import { Subscriber } from './interfaces/subscriber.interface';
-
-interface Index {
-  index: string;
-}
+import { Injectable } from '@nestjs/common/decorators/core/injectable.decorator';
 
 @Injectable()
 export class DbService {
