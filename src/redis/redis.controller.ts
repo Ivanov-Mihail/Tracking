@@ -17,7 +17,7 @@ import { Subscriber } from 'src/db/interfaces/subscriber.interface';
 @Controller('geolocation')
 export class GeolocationController {
   constructor(private readonly dbService: DbService) {}
-  timeNow = new Date(Date.now());
+  private timeNow: Date = new Date(Date.now());
 
   private readonly logger = new Logger('RedisController', false);
 
