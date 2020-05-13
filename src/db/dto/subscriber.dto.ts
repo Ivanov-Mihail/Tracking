@@ -1,9 +1,9 @@
-export class SubscriberDTO{
-    id: number;
-    role: string;
-    phone: number;
-    name: string;
-    latitude: number;
-    longitude: number;
-    email: string;
+export class SubscriberDTO {
+  readonly id: number;
+  readonly role: string;
+  readonly phone: number;
+  readonly name: string;
+  readonly latitude: number;
+  readonly longitude: number;
+  readonly email: string;
 }

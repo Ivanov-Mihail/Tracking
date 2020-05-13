@@ -1,4 +1,3 @@
-
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import * as h3 from 'h3-js';
@@ -9,6 +8,7 @@ import { Point } from './interfaces/point.interface';
 import { SubscriberDTO } from './dto/subscriber.dto';
 import { Subscriber } from './interfaces/subscriber.interface';
 import { Injectable } from '@nestjs/common/decorators/core/injectable.decorator';
+import { NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class DbService {
@@ -18,41 +18,70 @@ export class DbService {
     @InjectModel('Subscriber') private subscriberModel: Model<Subscriber>,
   ) {}
 
-  private pubs: Publisher[] = [];
+  public async SavePoint(point: GeoPointDTO): Promise<Point> {
+    console.log(`received DTO: ${JSON.stringify(point)}\n`);
+    const pointDoc = new this.pointModel(point);
+    console.log(`parse in MODEL: ${JSON.stringify(pointDoc)}\n`);
+
+    pointDoc.index = h3.geoToH3(pointDoc.latitude, pointDoc.longitude, 7);
+
+    pointDoc.serverDate = new Date(Date.now());
+
+    console.log(`filled 2 fields: ${JSON.stringify(pointDoc)}\n`);
+
+    const result = await pointDoc.save();
+
+    console.log(`saved Mongo Model: ${JSON.stringify(result)}\n`);
+
+    return result;
+  }
+
+  async SavePublisherPosition(
+    publisherDTO: PublisherPositionDTO,
+  ): Promise<Publisher> {
+    const result = new this.publisherModel(publisherDTO);
+
+    result.data.index = h3.geoToH3(
+      publisherDTO.data.latitude,
+      publisherDTO.data.longitude,
+      7,
+    );
+
+    await result.save();
+
+    console.log(result);
+    return result;
+  }
 
   async GetAllPublishers(): Promise<Publisher[]> {
     const publishers = await this.publisherModel.find().exec();
     return publishers;
   }
 
-  async GetPublisherById(publisherId: string): Promise<Publisher> {
-    const publisher = await this.publisherModel.findById(publisherId);
+  async GetPublisherById(publisherId: number): Promise<Publisher> {
+    const publisher = await this.publisherModel.findOne(
+      publisher => publisher.id === publisherId,
+    );
     return publisher;
   }
 
-  async GetSubscribers(publisherId: string): Promise<Subscriber[]> {
-    const publisher: Publisher = await this.GetPublisherById(publisherId);
-    const subscribers: Subscriber[] = publisher.follower;
+  async GetSubscribersByPublihserId(publisherId: number): Promise<Subscriber> {
+    const p: PublisherPositionDTO = new PublisherPositionDTO();
+    p.id = publisherId;
+    const t = new this.publisherModel(p);
+    const publisher = await this.publisherModel.findOne(t);
+
+    if (!publisher) {
+      throw new NotFoundException(`User with ID "${publisher}" not found.`);
+    }
+
+    const subscribers: Subscriber = publisher.follower;
     return subscribers;
   }
 
-  async AddPublsiher(publisherDTO: PublisherPositionDTO): Promise<Publisher> {
-    publisherDTO.data.forEach(point => {
-      point.index = h3.geoToH3(point.latitude, point.longitude, 7);
-    });
+  //#region
 
-    const result = await new this.publisherModel(publisherDTO).save();
-    console.log(result);
-    return result;
-  }
-
-  async AddPoint(point: GeoPointDTO): Promise<Point> {
-    const result = await new this.pointModel(point).save();
-    console.log(result);
-    return result;
-  }
-
-  async AddSubscriber(subscriberDTO: SubscriberDTO) {
+  async SaveSubscriber(subscriberDTO: SubscriberDTO) {
     const result = await new this.subscriberModel(subscriberDTO).save();
     console.log(result);
   }
@@ -66,4 +95,6 @@ export class DbService {
     const result = await new this.publisherModel(publisherDTO).remove();
     console.log(result);
   }
+
+  ////#endregion
 }

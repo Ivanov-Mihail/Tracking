@@ -1,10 +1,9 @@
-import { Point } from "./point.interface";
+import { Point } from './point.interface';
 import { Document } from 'mongoose';
-import { Subscriber } from "./subscriber.interface";
+import { Subscriber } from './subscriber.interface';
 
 export interface Publisher extends Document {
-    id: number;
-    data: Point[];
-    follower: Subscriber[];
-  }
-  
+  readonly id: number;
+  readonly data: Point;
+  readonly follower: Subscriber;
+}

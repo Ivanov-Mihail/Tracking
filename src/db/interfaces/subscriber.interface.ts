@@ -1,12 +1,11 @@
 import { Document } from 'mongoose';
 
 export interface Subscriber extends Document {
-    id: number;
-    role: string;
-    phone: number;
-    name: string,
-    latitude: number;
-    longitude: number;
-    email: string;
-  }
-  
+  readonly id: number;
+  readonly role: string;
+  readonly phone: number;
+  readonly name: string;
+  readonly latitude: number;
+  readonly longitude: number;
+  readonly email: string;
+}
