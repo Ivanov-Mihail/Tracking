@@ -3,6 +3,6 @@ import { SubscriberDTO } from './subscriber.dto';
 
 export class PublisherPositionDTO {
    id: number;
-  readonly data: GeoPointDTO;
-  readonly follower: SubscriberDTO;
+   data: GeoPointDTO;
+   follower: SubscriberDTO;
 }

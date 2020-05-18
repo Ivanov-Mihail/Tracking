@@ -2,13 +2,16 @@
 import { DbModule } from './db/db.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TrackingModule } from './tracking/tracking.module';
-import { Module } from '@nestjs/common/decorators/modules/module.decorator';
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+
 
 @Module({
-  imports: [
+  imports: [  
     DbModule,
     TrackingModule,
-    MongooseModule.forRoot('mongodb://localhost:27017/tracking'),
+    ConfigModule.forRoot(),
+    MongooseModule.forRoot(process.env.APP_DB_CONNECTION),
   ],
   controllers: [],
   providers: [],

@@ -6,6 +6,4 @@ export class GeoPointDTO {
   speed: number;
   direction: number;
   phoneDate: Date;
-  // serverDate: Date;
-  // index: string;
 }

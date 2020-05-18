@@ -8,7 +8,7 @@ import { Point } from './interfaces/point.interface';
 import { SubscriberDTO } from './dto/subscriber.dto';
 import { Subscriber } from './interfaces/subscriber.interface';
 import { Injectable } from '@nestjs/common/decorators/core/injectable.decorator';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, BadRequestException } from '@nestjs/common';
 
 @Injectable()
 export class DbService {
@@ -18,22 +18,22 @@ export class DbService {
     @InjectModel('Subscriber') private subscriberModel: Model<Subscriber>,
   ) {}
 
-  public async SavePoint(point: GeoPointDTO): Promise<Point> {
-    console.log(`received DTO: ${JSON.stringify(point)}\n`);
-    const pointDoc = new this.pointModel(point);
-    console.log(`parse in MODEL: ${JSON.stringify(pointDoc)}\n`);
+  public async SavePoints(points: GeoPointDTO[], driverid: number){
+   
+  
+    console.log(`Point's : `, points.length);
 
-    pointDoc.index = h3.geoToH3(pointDoc.latitude, pointDoc.longitude, 7);
+    if(typeof points.length === 'undefined' || points.length<0)
+      return new BadRequestException('НЕТ массива точек.');
 
-    pointDoc.serverDate = new Date(Date.now());
-
-    console.log(`filled 2 fields: ${JSON.stringify(pointDoc)}\n`);
-
-    const result = await pointDoc.save();
-
-    console.log(`saved Mongo Model: ${JSON.stringify(result)}\n`);
-
-    return result;
+    for(let i =0; i< points.length; i++){   
+      const pointToSave = new this.pointModel(points[i]);
+      console.log(`DTO: ${JSON.stringify(pointToSave)}`);
+      pointToSave.index = h3.geoToH3(pointToSave.latitude, pointToSave.longitude, 7);
+      pointToSave.driverId = driverid;
+      pointToSave.serverDate = new Date(Date.now());
+      await pointToSave.save();
+    }
   }
 
   async SavePublisherPosition(
