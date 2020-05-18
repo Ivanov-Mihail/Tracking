@@ -14,8 +14,6 @@ async function bootstrap() {
   // });
 
   app.use(compression());
-  await app.startAllMicroservicesAsync();
-  console.log(`Application is running on: ${await app.getUrl()}`);
   console.log(`APP_PORT= ${process.env.APP_PORT}`);
   console.log(`APP_DB_CONNECTION= ${process.env.APP_DB_CONNECTION}`);
   console.log(`REDIS_URL= ${process.env.REDIS_URL}`);
@@ -24,7 +22,11 @@ async function bootstrap() {
   console.log(`APP_DB_CONNECTION= `, process.env.APP_DB_CONNECTION);
   console.log(`REDIS_URL= `, process.env.REDIS_URL);
 
+  await app.startAllMicroservicesAsync();
+ 
+
   await app.listen(3001);
+  console.log(`Application is running on: ${await app.getUrl()}`);
  
 }
 bootstrap();
