@@ -7,6 +7,7 @@ import {
   Logger,
   Delete,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { DbService } from 'src/db/db.service';
 import { PublisherPositionDTO } from 'src/db/dto/publisher-pos-dto';
@@ -24,32 +25,47 @@ export class TrackingController {
     private readonly dbService: DbService,
     private readonly authSvc: AuthService,
   ) {}
-  private timeNow: Date = new Date(Date.now());
 
-  private readonly logger = new Logger('TrackingController', false);
+  private readonly timeNow: Date = new Date(Date.now());
+  private readonly logger: Logger = new Logger('TrackingController', false);
 
-  
-  @Post('location')
-  async SavePoint(@Body('data') locations: GeoPointDTO[], @Body('id') id:number) {
-    console.log(`DRIVER ID: `, id);
-    await this.dbService.SavePoints(locations, id);
-    console.log(` Driver ${id} location successfully saved! `);
-    return {answer: "All is fine"};
+  @Post('location') // localhost:3001/tracking/location
+  async SavePoint( @Body('data') locations: GeoPointDTO[], @Body('id') id: number,) {
+    try {
+      await this.dbService.SavePoints(locations, id);
+      this.logger.log(`Driver №` + id, `Location successfully saved!`);
+      return { answer: `Driver № ${id} Location successfully saved!` };
+
+    } catch (e) {
+      return {
+        exception: `${new BadRequestException(locations, 'Exception')}`,
+      };
+    }
   }
 
-  /* ------------------------------------------------------------------------------- */
-
-  @Get('/publisher') // localhost:3001/tracking/publisher
-  async GetAllPublishers(): Promise<Publisher[]> {
-    this.logger.log(`Request GET: publisher - ${this.timeNow}`);
+  @Get('location') // localhost:3001/tracking/location
+  async GetAllPublishers(): Promise<GeoPointDTO[]> {
     return this.dbService.GetAllPublishers();
   }
 
-  @Get('publisher/:id') // localhost:3001/tracking/publisher/?id=21
-  async GetPublisherPositionById(@Param('id') id: number): Promise<Publisher> {
+  @Get('/:id') // localhost:3001/tracking/publisher/?id=21
+  async GetPublisherPositionById(@Param('id') id: number): Promise<GeoPointDTO> {
     this.logger.log(`Request GET: publisher/${id} - ${this.timeNow}`);
     return this.dbService.GetPublisherById(id);
   }
+
+
+  @Get('location/:startTime/:endTime') // localhost:3001/tracking/location
+  async GetPublishersByTime(
+    @Param('startTime') startTime: string,
+    @Param('endTime') endTime: string,
+  ): Promise<GeoPointDTO[]> {
+
+    return await this.dbService.GetPublishersByTime(startTime,endTime);
+
+  }
+
+  /* ------------------------------------------------------------------------------- */
 
   @Post('/publisher') //localhost:3001/tracking/publisher
   async SavePublisherPosition(@Body() publisher: PublisherPositionDTO) {
