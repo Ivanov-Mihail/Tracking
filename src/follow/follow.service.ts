@@ -8,8 +8,14 @@ export class FollowService {
 
     }
 
-    async getSubscribtions(id:string, followerId:number, publisherId:number):Promise<Subscribtion[]>{
-        const existingSubscribtion = await this.db.getSubscribtions(id, followerId, publisherId);
+
+    async getSubscribtion(id:string):Promise<Subscribtion>{
+        const existingSubscribtion = await this.db.getSubscribtion(id);
+        return existingSubscribtion;
+    }
+
+    async getSubscribtions(followerId:number, publisherId:number):Promise<Subscribtion[]>{
+        const existingSubscribtion = await this.db.getSubscribtions(followerId, publisherId);
         return existingSubscribtion;
     }
 
