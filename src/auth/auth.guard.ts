@@ -11,12 +11,11 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-
-    if (request.body == null || !Array.isArray(request.body.data)) {
+    if (request.body == null) {
       return false;
     }
-
     try {
+      console.log("asdasadsad");
       let remoteUser = null;
       const cacheRawJson: string = await this.authSvc.getPair(
         request.headers.authorization,
@@ -28,8 +27,9 @@ export class AuthGuard implements CanActivate {
         remoteUser.id <= 0
       ) {
         console.log('token is missing in redis');
+        console.log(request.headers.authorization)
         remoteUser = await this.authSvc.Authenticate(
-          request.headers.authorization,
+          request.headers.authorization
         );
         this.authSvc.insertPair(
           request.headers.authorization,
