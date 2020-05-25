@@ -49,8 +49,8 @@ export class DbService {
     publisherId: number,
   ): Promise<Subscribtion> {
     const existing = await this.getSubscribtions(followerId, publisherId);
-    console.log(typeof existing);
-    if (typeof existing !== 'undefined') {
+    
+    if (existing.length > 0) {
       throw new BadRequestException("Allready existing");
     }
     if (!followerId || !publisherId) {
