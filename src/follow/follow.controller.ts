@@ -7,13 +7,13 @@ export class FollowController {
     constructor(private readonly followSvc:FollowService) {}
 
     @Get('/:id')  // http://localhost:3001/subscribtions/5ec7de16f06da5369455b339?follower_id=1&publisher_id=2
-    async getSubscribtion(@Param('id') id:string){
+    async getSubscribtion( @Param('id') id:string){
         const existingSubscribtion = await this.followSvc.getSubscribtion(id);
         return { data:{ id:existingSubscribtion._id, followerId:existingSubscribtion.followerId, publisherId:existingSubscribtion.publisherId} }
     }
 
     @Get() // http://localhost:3001/subscribtions?follower_id=1&publisher_id=3
-    async getSubscribtions(@Query('follower_id') followerId:number, @Query('publisher_id') publisherId:number){
+    async getSubscribtions( @Query('follower_id') followerId:number, @Query('publisher_id') publisherId:number){
         console.log(`${followerId}, ${publisherId}`);
         const existingSubscribtions = await this.followSvc.getSubscribtions(followerId, publisherId);
         const data = [];
@@ -27,7 +27,7 @@ export class FollowController {
     }
 
     @Post()
-    async createSubscribtion(@Body('follower_id') followerId:number, @Body('publisher_id') publisherId:number){
+    async createSubscribtion( @Body('follower_id') followerId:number, @Body('publisher_id') publisherId:number){
         if(typeof followerId !== 'number' || typeof publisherId !== 'number' ){
             return new BadRequestException();
         }
@@ -38,8 +38,10 @@ export class FollowController {
     }
 
     @Delete('/:id')
-    async deleteSubscribtion(@Param(':id') id:string){
+    async deleteSubscribtion( @Param(':id') id:string){
         const subscribtiontoDelete = await this.followSvc.deleteSubscribtion(id);
         return subscribtiontoDelete;
     }
+    
+
 }

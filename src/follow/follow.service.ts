@@ -5,7 +5,7 @@ import { Subscribtion } from 'src/db/interfaces/subscribtion.inteface';
 @Injectable()
 export class FollowService {
     constructor(private readonly db:DbService){
-
+        
     }
 
 
