@@ -9,15 +9,15 @@ export class TrackingService {
 
     }
     
-    async SaveDriverReports(points: GeoPointDTO[], driverId: number){
-        for(let i = 0;i < points.length; i++){
-            return this.ValidateGeoPoint(points[i]);
+    async SaveDriverPositions(points: GeoPointDTO[], driverId: number){
+        for(let i = 0; i < points.length; i++){
+            await this.ValidateGeoPoint(points[i]);
         }
-        return this.db.SaveDriverReports(points, driverId)
+        return await this.db.SaveDriverPositions(points, driverId)
     }
 
-    async GetDriverReports(driverId:number, startDate:string, endDate:string):Promise<Point[]>{
-        return await this.db.GetDriverReports(driverId, startDate, endDate);
+    async GetDriverPositions(driverId:number, startDate:string, endDate:string):Promise<Point[]>{
+        return await this.db.GetDriverPositions(driverId, startDate, endDate);
     }
 
     private async ValidateGeoPoint(point:GeoPointDTO){
