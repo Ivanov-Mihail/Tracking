@@ -14,8 +14,7 @@ export class AuthGuard implements CanActivate {
     if (request.body == null) {
       return false;
     }
-    try {
-      console.log("asdasadsad");
+    try { 
       let remoteUser = null;
       const cacheRawJson: string = await this.authSvc.getPair(
         request.headers.authorization,

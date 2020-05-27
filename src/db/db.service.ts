@@ -9,26 +9,23 @@ import { Subscribtion } from './interfaces/subscribtion.inteface';
 import { Types } from 'mongoose';
 import { ClientProxyFactory } from '@nestjs/microservices/';
 import { Transport } from '@nestjs/microservices';
-import { env } from 'process';
 
 @Injectable()
 export class DbService {
   private readonly logger: Logger = new Logger('TrackingController', false);
 
   client: any;
-  
+
   constructor(
     @InjectModel('Subscribtion') private subscribtionModel: Model<Subscribtion>,
-    @InjectModel('Point') private pointModel: Model<Point>) {
-      this.client = ClientProxyFactory.create({
-        transport: Transport.REDIS,
-        options: {
-          url: process.env.REDIS_URL,
-        }
-      }
-    );
-
-
+    @InjectModel('Point') private pointModel: Model<Point>,
+  ) {
+    this.client = ClientProxyFactory.create({
+      transport: Transport.REDIS,
+      options: {
+        url: process.env.REDIS_URL,
+      },
+    });
   }
 
   //#region Follow.Controller
@@ -43,7 +40,10 @@ export class DbService {
     }
   }
 
-  async getSubscribtions(followerId: number,publisherId: number): Promise<Subscribtion[]> {
+  async getSubscribtions(
+    followerId: number,
+    publisherId: number,
+  ): Promise<Subscribtion[]> {
     const query: any = {};
     if (followerId) {
       query.followerId = followerId;
@@ -85,16 +85,7 @@ export class DbService {
   //#endregion
 
   //#region Tracking.Controller
-  async SaveDriverPositions( points: GeoPointDTO[], driverid: number ) {
-    console.log(1111)
-    if (
-      typeof points !== 'object' ||
-      typeof points.length === 'undefined' ||
-      points.length <= 0
-    ) {
-      throw new BadRequestException(`Wrong ponts `);
-    }
-    console.log(driverid);
+  async SaveDriverPositions(points: GeoPointDTO[], driverid: number) {
     let pemissionToSend = false;
     const subscribtions = await this.getSubscribtions(null, driverid);
     pemissionToSend = subscribtions.length > 0;
@@ -109,30 +100,24 @@ export class DbService {
       pointToSave.driverId = driverid;
       pointToSave.serverDate = new Date();
       console.log(pointToSave);
-      if(pemissionToSend){
-        this.PublishPosition(pointToSave,subscribtions)
+      if (pemissionToSend) {
+        this.PublishPosition(pointToSave, subscribtions);
       }
       await pointToSave.save();
     }
   }
 
-  async GetDriverPositions(
-    driverId: number,
-    startDate: string,
-    endDate: string,
-  ): Promise<Point[]> {
+  async GetDriverPositions(driverId: number,startDate: string,endDate: string,): Promise<Point[]> {
     const query: any = {};
     if (typeof driverId !== 'undefined') {
       query.driverId = driverId;
     }
     const timeQuery: any = {};
-
     if (typeof startDate !== 'undefined' || typeof endDate !== 'undefined') {
       if (typeof startDate !== 'undefined') {
         timeQuery.$gte = startDate;
       }
-
-      if (typeof endDate !== 'undefined') {
+      else if (typeof endDate !== 'undefined') {
         timeQuery.$lte = endDate;
       }
       query.phoneDate = timeQuery;
@@ -142,10 +127,15 @@ export class DbService {
     return result;
   }
 
-
-  private async PublishPosition(point: Point, subscribtions: Subscribtion[]){
+  private async PublishPosition(point: Point, subscribtions: Subscribtion[]) {
     console.log(typeof this.client);
-     await this.client.emit('tracking.follower.position', {data:point, ids:subscribtions, from: "tracking-service"} ).toPromise();      
+    await this.client
+      .emit('tracking.follower.position', {
+        data: point,
+        ids: subscribtions,
+        from: 'tracking-service',
+      })
+      .toPromise();
   }
   //#endregion
 }
