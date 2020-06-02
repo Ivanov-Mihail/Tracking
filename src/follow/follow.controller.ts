@@ -1,12 +1,14 @@
-import { Controller, Body, Get, Param, Query, Post, Delete, BadRequestException } from '@nestjs/common';
+import { Controller, Body, Get, Param, Query, Post, Delete, BadRequestException, UseGuards } from '@nestjs/common';
 import { FollowService } from './follow.service';
+import { AuthGuard } from 'src/auth/auth.guard';
 
+UseGuards(AuthGuard)
 @Controller('subscribtions')
 export class FollowController {
 
     constructor(private readonly followSvc:FollowService) {}
 
-    @Get('/:id')  // http://localhost:3001/subscribtions/5ec7de16f06da5369455b339?follower_id=1&publisher_id=2
+    @Get('/:id')  // http://localhost:3001/subscribtions/5ec7de16f06da5369455b339
     async getSubscribtion( @Param('id') id:string){
         const existingSubscribtion = await this.followSvc.getSubscribtion(id);
         return { data:{ id:existingSubscribtion._id, followerId:existingSubscribtion.followerId, publisherId:existingSubscribtion.publisherId} }
@@ -39,6 +41,7 @@ export class FollowController {
 
     @Delete('/:id')
     async deleteSubscribtion( @Param(':id') id:string){
+        console.log(1213212312312)
         const subscribtiontoDelete = await this.followSvc.deleteSubscribtion(id);
         return subscribtiontoDelete;
     }
