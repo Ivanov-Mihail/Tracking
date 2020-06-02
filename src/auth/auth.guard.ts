@@ -4,10 +4,8 @@ import { AuthService } from 'cityride-auth/dist/auth/auth.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(
-    private reflector: Reflector,
-    private readonly authSvc: AuthService,
-  ) {}
+  
+  constructor( private reflector: Reflector, private readonly authSvc: AuthService ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();

@@ -40,8 +40,7 @@ export class FollowController {
     }
 
     @Delete('/:id')
-    async deleteSubscribtion( @Param(':id') id:string){
-        console.log(1213212312312)
+    async deleteSubscribtion( @Param('id') id:string){   
         const subscribtiontoDelete = await this.followSvc.deleteSubscribtion(id);
         return subscribtiontoDelete;
     }

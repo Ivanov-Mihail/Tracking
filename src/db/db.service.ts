@@ -76,7 +76,7 @@ export class DbService {
   }
 
   async deleteSubscribtion(id: string) {
-    if (id) {
+    if (typeof id === 'undefined') {
       throw new BadRequestException();
     }
     const result = await this.subscribtionModel.deleteOne({ _id: id });
@@ -85,7 +85,8 @@ export class DbService {
   //#endregion
 
   //#region Tracking.Controller
-  async SaveDriverPositions(points: GeoPointDTO[], driverid: number) {
+  async SaveDriverPositions(points: GeoPointDTO[], driverid: number): Promise<Point> {
+    let result: Point=null;
     let pemissionToSend = false;
     const subscribtions = await this.getSubscribtions(null, driverid);
     pemissionToSend = subscribtions.length > 0;
@@ -103,7 +104,8 @@ export class DbService {
       if (pemissionToSend) {
         this.PublishPosition(pointToSave, subscribtions);
       }
-      await pointToSave.save();
+       result = await pointToSave.save();
+      return result;
     }
   }
 

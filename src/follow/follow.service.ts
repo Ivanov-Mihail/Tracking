@@ -4,9 +4,7 @@ import { Subscribtion } from 'src/db/interfaces/subscribtion.inteface';
 
 @Injectable()
 export class FollowService {
-    constructor(private readonly db:DbService){
-        
-    }
+    constructor(private readonly db:DbService) { }
 
 
     async getSubscribtion(id:string):Promise<Subscribtion>{
@@ -27,6 +25,9 @@ export class FollowService {
 
     async deleteSubscribtion(id:string){
         const subscribtiontoDelete = await this.db.deleteSubscribtion(id);
-        return subscribtiontoDelete;
+        if(subscribtiontoDelete.n == 1)
+            return {isDeleted: true};
+        else
+            return {isDeleted: false};
     }
 }
