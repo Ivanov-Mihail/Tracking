@@ -27,7 +27,7 @@
     "@nestjs/microservices": "^7.0.9",
     "@nestjs/mongoose": "^7.0.0",
     "@nestjs/platform-express": "^7.0.0",
-    "cityride-auth": "^0.2.8",
+    "cityride-auth": "^0.4.6",
     "class-transformer": "^0.2.3",
     "class-validator": "^0.12.2",
     "compression": "^1.7.4",

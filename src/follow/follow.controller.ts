@@ -1,6 +1,7 @@
 import { Controller, Body, Get, Param, Query, Post, Delete, BadRequestException, UseGuards } from '@nestjs/common';
 import { FollowService } from './follow.service';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from 'cityride-auth/dist/auth/auth.guard';
+
 
 UseGuards(AuthGuard)
 @Controller('subscribtions')

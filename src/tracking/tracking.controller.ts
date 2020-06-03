@@ -9,23 +9,32 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { GeoPointDTO } from 'src/db/dto/geo_point.dto';
-import { AuthGuard } from 'src/auth/auth.guard';
 import { TrackingService } from './tracking.service';
 import { Point } from 'src/db/interfaces/point.interface';
+import { AuthGuard } from 'cityride-auth/dist/auth/auth.guard'
+import { RolesGuard } from 'cityride-auth/dist/auth/roles.guard'
+import { PermissionsGuard } from 'cityride-auth/dist/auth/permissions.guard'
+import { Permissions } from 'cityride-auth/dist/auth/permissions.decorator'
+import { Roles } from 'cityride-auth/dist/auth/roles.decorator'
+import { Usr } from 'cityride-auth/dist/auth/user.decorator'
 
-@UseGuards(AuthGuard)
+
 @Controller('tracking')
+@UseGuards(RolesGuard)
+@UseGuards(PermissionsGuard)
+@UseGuards(AuthGuard)
 export class TrackingController {
   constructor(private readonly trackingSvc:TrackingService) {
     
   }
 
+  @Roles("driver",'client')
+  @Permissions("read")
   @Post('locations') // localhost:3001/tracking/location
-  @UsePipes(ValidationPipe)
-  async SaveDriverReport( @Body('data') locations: GeoPointDTO[], @Body('id') id: number): Promise<Point[]>{
-      console.log(locations, id)
-    return await this.trackingSvc.SaveDriverPositions(locations, id);
-     
+  //@UsePipes(ValidationPipe)
+  async SaveDriverReport(@Usr() user:any, @Body('data') locations: GeoPointDTO[]): Promise<Point[]>{
+    console.log(user);
+    return await this.trackingSvc.SaveDriverPositions(locations, user.id);     
   }
 
   @Get('locations') // localhost:3001/tracking/location
