@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # cityride-ws-tracking-service
 Tracking Service
 =======hhhh
