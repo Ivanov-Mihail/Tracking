@@ -5,6 +5,8 @@ import {
   Get,
   UseGuards,
   Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { GeoPointDTO } from 'src/db/dto/geo_point.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -19,7 +21,8 @@ export class TrackingController {
   }
 
   @Post('locations') // localhost:3001/tracking/location
-  async SaveDriverReport( @Body('data') locations: GeoPointDTO[], @Body('id') id: number): Promise<Point>{
+  @UsePipes(ValidationPipe)
+  async SaveDriverReport( @Body('data') locations: GeoPointDTO[], @Body('id') id: number): Promise<Point[]>{
       console.log(locations, id)
     return await this.trackingSvc.SaveDriverPositions(locations, id);
      
@@ -37,8 +40,6 @@ export class TrackingController {
     return {data:result};
   }
 
-
-  
   // @MessagePattern('subscribtion')
   // async getSubscribtionRedis(driverId: number) : Promise<GeoPointDTO[]> {
       

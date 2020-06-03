@@ -1,11 +1,21 @@
 import { Point } from '../interfaces/point.interface';
+import { IsNotEmpty, IsDateString, IsDecimal, IsLatitude, IsLongitude } from 'class-validator'
 
 export class GeoPointDTO {
+
+  @IsNotEmpty()
+  // @IsDecimal()
+   @IsLatitude()
   latitude: number;
+  
+  @IsNotEmpty()
+  //@IsLongitude()
   longitude: number;
   accuracy: number;
   speed: number;
   direction: number;
+  @IsNotEmpty()
+  @IsDateString()  
   time: Date;
 
   static async fromDbPoint(dbPoint: Point): Promise<GeoPointDTO> {

@@ -13,7 +13,7 @@ import { Transport } from '@nestjs/microservices';
 @Injectable()
 export class DbService {
   private readonly logger: Logger = new Logger('TrackingController', false);
-
+  
   client: any;
 
   constructor(
@@ -85,8 +85,8 @@ export class DbService {
   //#endregion
 
   //#region Tracking.Controller
-  async SaveDriverPositions(points: GeoPointDTO[], driverid: number): Promise<Point> {
-    let result: Point=null;
+  async SaveDriverPositions(points: GeoPointDTO[], driverid: number): Promise<Point[]> {
+    const result:Point[]=[];
     let pemissionToSend = false;
     const subscribtions = await this.getSubscribtions(null, driverid);
     pemissionToSend = subscribtions.length > 0;
@@ -104,9 +104,13 @@ export class DbService {
       if (pemissionToSend) {
         this.PublishPosition(pointToSave, subscribtions);
       }
-       result = await pointToSave.save();
-      return result;
+     
+      result.push(await pointToSave.save());
+      
     }
+    return result;
+
+    
   }
 
   async GetDriverPositions(driverId: number,startDate: string,endDate: string,): Promise<Point[]> {
