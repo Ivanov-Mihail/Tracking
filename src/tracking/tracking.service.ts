@@ -10,9 +10,9 @@ export class TrackingService {
     }
     
     async SaveDriverPositions(points: GeoPointDTO[], driverId: number){
-        for(let i = 0; i < points.length; i++){
-            await this.ValidateGeoPoint(points[i]);
-        }
+        // for(let i = 0; i < points.length; i++){
+        //     await this.ValidateGeoPoint(points[i]);
+        // }
         return await this.db.SaveDriverPositions(points, driverId)
     }
 

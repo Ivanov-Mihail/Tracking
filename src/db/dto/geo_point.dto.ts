@@ -4,18 +4,18 @@ import { IsNotEmpty, IsDateString, IsDecimal, IsLatitude, IsLongitude } from 'cl
 export class GeoPointDTO {
 
   @IsNotEmpty()
-  // @IsDecimal()
-   @IsLatitude()
+  @IsLatitude()
   latitude: number;
   
   @IsNotEmpty()
-  //@IsLongitude()
+  @IsLongitude()
   longitude: number;
+  
   accuracy: number;
   speed: number;
   direction: number;
   @IsNotEmpty()
-  @IsDateString()  
+  //@IsDateString()  
   time: Date;
 
   static async fromDbPoint(dbPoint: Point): Promise<GeoPointDTO> {
