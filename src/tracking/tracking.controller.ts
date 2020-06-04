@@ -31,7 +31,7 @@ export class TrackingController {
   
   //@UsePipes(ValidationPipe)
   @Roles("driver",'client')
-  @Permissions("read")
+  @Permissions()
   @Post('locations') // localhost:3001/tracking/location
   async SaveDriverReport(@Usr() user:any, @Body('data',new ParseArrayPipe({items:GeoPointDTO})) locations: GeoPointDTO[]): Promise<Point[]>{
     console.log(user);
