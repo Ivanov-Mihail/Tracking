@@ -1,6 +1,6 @@
 import { Document } from 'mongoose';
 
-export interface Subscribtion extends Document {
+export interface Subscription extends Document {
    followerId: number;
    publisherId: number;
 }

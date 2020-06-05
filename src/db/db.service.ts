@@ -5,7 +5,7 @@ import { GeoPointDTO } from './dto/geo_point.dto';
 import { Point } from './interfaces/point.interface';
 import { Injectable } from '@nestjs/common/decorators/core/injectable.decorator';
 import { BadRequestException, Logger } from '@nestjs/common';
-import { Subscribtion } from './interfaces/subscribtion.inteface';
+import { Subscription } from './interfaces/subscribtion.inteface';
 import { Types } from 'mongoose';
 import { ClientProxyFactory } from '@nestjs/microservices/';
 import { Transport } from '@nestjs/microservices';
@@ -17,7 +17,7 @@ export class DbService {
   client: any;
 
   constructor(
-    @InjectModel('Subscribtion') private subscribtionModel: Model<Subscribtion>,
+    @InjectModel('Subscription') private subscriptionModel: Model<Subscription>,
     @InjectModel('Point') private pointModel: Model<Point>,
   ) {
     this.client = ClientProxyFactory.create({
@@ -29,21 +29,21 @@ export class DbService {
   }
 
   //#region Follow.Controller
-  async getSubscribtion(id: string): Promise<Subscribtion> {
+  async getSubscription(id: string): Promise<Subscription> {
     if (typeof id === 'string') {
       if (Types.ObjectId.isValid(id)) {
-        const subscribtions = await this.subscribtionModel.findById(id);
-        return subscribtions;
+        const subscriptions = await this.subscriptionModel.findById(id);
+        return subscriptions;
       } else {
         throw new BadRequestException();
       }
     }
   }
 
-  async getSubscribtions(
+  async getSubscriptions(
     followerId: number,
     publisherId: number,
-  ): Promise<Subscribtion[]> {
+  ): Promise<Subscription[]> {
     const query: any = {};
     if (followerId) {
       query.followerId = followerId;
@@ -52,15 +52,15 @@ export class DbService {
       query.publisherId = publisherId;
     }
     console.log(query);
-    const subscribtions = await this.subscribtionModel.find(query);
-    return subscribtions;
+    const subscriptions = await this.subscriptionModel.find(query);
+    return subscriptions;
   }
 
-  async createSubscribtion(
+  async createSubscription(
     followerId: number,
     publisherId: number,
-  ): Promise<Subscribtion> {
-    const existing = await this.getSubscribtions(followerId, publisherId);
+  ): Promise<Subscription> {
+    const existing = await this.getSubscriptions(followerId, publisherId);
 
     if (existing.length > 0) {
       throw new BadRequestException('Allready existing');
@@ -68,18 +68,18 @@ export class DbService {
     if (!followerId || !publisherId) {
       throw new BadRequestException();
     }
-    const subscribtionToSave = new this.subscribtionModel();
-    subscribtionToSave.followerId = followerId;
-    subscribtionToSave.publisherId = publisherId;
-    const result = await subscribtionToSave.save();
+    const subscriptionToSave = new this.subscriptionModel();
+    subscriptionToSave.followerId = followerId;
+    subscriptionToSave.publisherId = publisherId;
+    const result = await subscriptionToSave.save();
     return result;
   }
 
-  async deleteSubscribtion(id: string) {
+  async deleteSubscription(id: string) {
     if (typeof id === 'undefined') {
       throw new BadRequestException();
     }
-    const result = await this.subscribtionModel.deleteOne({ _id: id });
+    const result = await this.subscriptionModel.deleteOne({ _id: id });
     return result;
   }
   //#endregion
@@ -88,8 +88,8 @@ export class DbService {
   async SaveDriverPositions(points: GeoPointDTO[], driverid: number): Promise<Point[]> {
     const result:Point[]=[];
     let pemissionToSend = false;
-    const subscribtions = await this.getSubscribtions(null, driverid);
-    pemissionToSend = subscribtions.length > 0;
+    const subscriptions = await this.getSubscriptions(null, driverid);
+    pemissionToSend = subscriptions.length > 0;
     for (let i = 0; i < points.length; i++) {
       const pointToSave = new this.pointModel(points[i]);
       pointToSave.index = h3.geoToH3(
@@ -102,7 +102,7 @@ export class DbService {
       pointToSave.serverDate = new Date();
       console.log(pointToSave);
       if (pemissionToSend) {
-        this.PublishPosition(pointToSave, subscribtions);
+        this.PublishPosition(pointToSave, subscriptions);
       }
      
       result.push(await pointToSave.save());
@@ -133,12 +133,12 @@ export class DbService {
     return result;
   }
 
-  private async PublishPosition(point: Point, subscribtions: Subscribtion[]) {
+  private async PublishPosition(point: Point, subscriptions: Subscription[]) {
     console.log(typeof this.client);
     await this.client
       .emit('tracking.follower.position', {
         data: point,
-        ids: subscribtions,
+        ids: subscriptions,
         from: 'tracking-service',
       })
       .toPromise();

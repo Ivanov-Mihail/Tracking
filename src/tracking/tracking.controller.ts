@@ -33,27 +33,33 @@ export class TrackingController {
   @Roles("driver",'client')
   @Permissions()
   @Post('locations') // localhost:3001/tracking/location
-  async SaveDriverReport(@Usr() user:any, @Body('data',new ParseArrayPipe({items:GeoPointDTO})) locations: GeoPointDTO[]): Promise<Point[]>{
-    console.log(user);
-    return await this.trackingSvc.SaveDriverPositions(locations, user.id);     
+  async SaveDriverReport(@Usr() user:any, @Body('data',new ParseArrayPipe({items:GeoPointDTO})) locations: GeoPointDTO[]){
+    return { data: await this.trackingSvc.SaveDriverPositions(locations, user.id) };
   }
 
   @Roles("driver",'client')
   @Permissions()
   @Get('locations') // localhost:3001/tracking/location
   async GetDriverPositions(@Usr() user:any, @Query('driver_id') driverId:number, @Query('start_date') startDate:string, @Query('end_date') endDate:string) {
-    const dbPoints =  await this.trackingSvc.GetDriverPositions(user.id, startDate, endDate);
-    return dbPoints;
-    //
+    //v3
+    return { data: await this.trackingSvc.GetDriverPositions(driverId, startDate, endDate) };
+    // v2
+    const dbPoints =  await this.trackingSvc.GetDriverPositions(driverId, startDate, endDate);
+    const temp = { data: [] };
+    temp.data = dbPoints;
+    console.log(temp); 
+    return temp;
+    // v1
+    const dbPoints2 =  await this.trackingSvc.GetDriverPositions(driverId, startDate, endDate);
     const result:GeoPointDTO[] = [];
-    for(let i = 0; i < dbPoints.length; i++){
-      result.push(await GeoPointDTO.fromDbPoint(dbPoints[i]));
+    for(let i = 0; i < dbPoints2.length; i++){
+      result.push(await GeoPointDTO.fromDbPoint(dbPoints2[i]));
     }
     return {data:result};
   }
 
   // @MessagePattern('subscribtion')
-  // async getSubscribtionRedis(driverId: number) : Promise<GeoPointDTO[]> {
+  // async getSubscriptionRedis(driverId: number) : Promise<GeoPointDTO[]> {
       
   //     const points: GeoPointDTO[] = [];
       

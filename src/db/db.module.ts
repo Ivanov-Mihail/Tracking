@@ -4,7 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PointSchema } from './schema/point.schema';
 import { SubscriberSchema } from './schema/subscriber.schema';
 import { Module } from '@nestjs/common/decorators/modules';
-import { SubscribtionSchema } from './schema/subscribtion.schema';
+import { SubscriptionSchema } from './schema/subscribtion.schema';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
@@ -19,7 +19,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       },
     ]),
     MongooseModule.forFeature([
-      { name: 'Subscribtion', schema: SubscribtionSchema },
+      { name: 'Subscription', schema: SubscriptionSchema },
       { name: 'Point', schema: PointSchema },
       {name: 'Subscriber', schema: SubscriberSchema },
     ],),

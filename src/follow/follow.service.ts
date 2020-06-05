@@ -1,33 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { DbService } from 'src/db/db.service';
-import { Subscribtion } from 'src/db/interfaces/subscribtion.inteface';
+import { Subscription } from 'src/db/interfaces/subscribtion.inteface';
 
 @Injectable()
 export class FollowService {
     constructor(private readonly db:DbService) { }
 
 
-    async getSubscribtion(id:string):Promise<Subscribtion>{
-        const existingSubscribtion = await this.db.getSubscribtion(id);
-        return existingSubscribtion;
+    async getSubscription(id:string):Promise<Subscription>{
+        const existingSubscription = await this.db.getSubscription(id);
+        return existingSubscription;
     }
 
-    async getSubscribtions(followerId:number, publisherId:number):Promise<Subscribtion[]>{
-        const existingSubscribtion = await this.db.getSubscribtions(followerId, publisherId);
-        return existingSubscribtion;
+    async getSubscriptions(followerId:number, publisherId:number):Promise<Subscription[]>{
+        const existingSubscription = await this.db.getSubscriptions(followerId, publisherId);
+        return existingSubscription;
     }
 
-    async createSubscribtion(followerId:number, publisherId:number){
-        const createdSubscribtion = await this.db.createSubscribtion(followerId, publisherId);
-        return createdSubscribtion;
+    async createSubscription(followerId:number, publisherId:number){
+        const createdSubscription = await this.db.createSubscription(followerId, publisherId);
+        return createdSubscription;
     }
 
 
-    async deleteSubscribtion(id:string){
-        const subscribtiontoDelete = await this.db.deleteSubscribtion(id);
-        if(subscribtiontoDelete.n == 1)
-            return {isDeleted: true};
+    async deleteSubscription(id:string){
+        const subscriptionDelete = await this.db.deleteSubscription(id);
+        if(subscriptionDelete.n == 1)
+            return {isDeleted: true, message:`Subscription ${(id)} successfully deleted.`};
         else
-            return {isDeleted: false};
+            return {isDeleted: false, message:`Subscription ${(id)} dosen't exist.`};
     }
 }

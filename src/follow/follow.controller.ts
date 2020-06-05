@@ -4,46 +4,46 @@ import { AuthGuard } from 'cityride-auth/dist/auth/auth.guard';
 
 
 UseGuards(AuthGuard)
-@Controller('subscribtions')
+@Controller('subscriptions')
 export class FollowController {
 
     constructor(private readonly followSvc:FollowService) {}
 
-    @Get('/:id')  // http://localhost:3001/subscribtions/5ec7de16f06da5369455b339
-    async getSubscribtion( @Param('id') id:string){
-        const existingSubscribtion = await this.followSvc.getSubscribtion(id);
-        return { data:{ id:existingSubscribtion._id, followerId:existingSubscribtion.followerId, publisherId:existingSubscribtion.publisherId} }
+    @Get('/:id')  
+    async getSubscription( @Param('id') id:string){
+        const existingSubscription = await this.followSvc.getSubscription(id);
+        return { data:{ id:existingSubscription._id, followerId:existingSubscription.followerId, publisherId:existingSubscription.publisherId} }
     }
 
-    @Get() // http://localhost:3001/subscribtions?follower_id=1&publisher_id=3
-    async getSubscribtions( @Query('follower_id') followerId:number, @Query('publisher_id') publisherId:number){
+    @Get() 
+    async getSubscriptions( @Query('follower_id') followerId:number, @Query('publisher_id') publisherId:number){
         console.log(`${followerId}, ${publisherId}`);
-        const existingSubscribtions = await this.followSvc.getSubscribtions(followerId, publisherId);
+        const existingSubscriptions = await this.followSvc.getSubscriptions(followerId, publisherId);
         const data = [];
-        for(let i = 0;i<existingSubscribtions.length; i++){
-            const existingSubscribtion = existingSubscribtions[i];
+        for(let i = 0;i<existingSubscriptions.length; i++){
+            const existingSubscription = existingSubscriptions[i];
             // eslint-disable-next-line @typescript-eslint/camelcase
-            const subscribtion = {id: existingSubscribtion._id, follower_id:existingSubscribtion.followerId, existingSubscribtion:existingSubscribtion.publisherId};
-            data.push(subscribtion);
+            const subscription = {id: existingSubscription._id, follower_id:existingSubscription.followerId, existingSubscription:existingSubscription.publisherId};
+            data.push(subscription);
         }
         return { data:data }
     }
 
     @Post()
-    async createSubscribtion( @Body('follower_id') followerId:number, @Body('publisher_id') publisherId:number){
+    async createSubscription( @Body('follower_id') followerId:number, @Body('publisher_id') publisherId:number){
         if(typeof followerId !== 'number' || typeof publisherId !== 'number' ){
             return new BadRequestException();
         }
         console.log(`${followerId}, ${publisherId}`);
-        const createdSubscribtion = await this.followSvc.createSubscribtion(followerId, publisherId);
+        const createdSubscription = await this.followSvc.createSubscription(followerId, publisherId);
         // eslint-disable-next-line @typescript-eslint/camelcase
-        return { data:{id: createdSubscribtion._id, follower_id:createdSubscribtion.followerId, publisher_id:createdSubscribtion.publisherId} };
+        return { data: { id: createdSubscription._id, follower_id: createdSubscription.followerId, publisher_id: createdSubscription.publisherId} };
     }
 
     @Delete('/:id')
-    async deleteSubscribtion( @Param('id') id:string){   
-        const subscribtiontoDelete = await this.followSvc.deleteSubscribtion(id);
-        return subscribtiontoDelete;
+    async deleteSubscription( @Param('id') id:string){   
+        const subscriptiontoDelete = await this.followSvc.deleteSubscription(id);
+        return { data: subscriptiontoDelete };
     }
     
 
