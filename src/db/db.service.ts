@@ -4,7 +4,7 @@ import * as h3 from 'h3-js';
 import { GeoPointDTO } from './dto/geo_point.dto';
 import { Point } from './interfaces/point.interface';
 import { Injectable } from '@nestjs/common/decorators/core/injectable.decorator';
-import { BadRequestException, Logger } from '@nestjs/common';
+import { BadRequestException, Logger, NotFoundException } from '@nestjs/common';
 import { Subscription } from './interfaces/subscribtion.inteface';
 import { Types } from 'mongoose';
 import { ClientProxyFactory } from '@nestjs/microservices/';
@@ -130,6 +130,9 @@ export class DbService {
     }
 
     const result = await this.pointModel.find(query);
+    if(result.length == 0){
+      throw new NotFoundException();
+    }
     return result;
   }
 
