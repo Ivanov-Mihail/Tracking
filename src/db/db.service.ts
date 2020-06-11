@@ -51,7 +51,7 @@ export class DbService {
     if (publisherId) {
       query.publisherId = publisherId;
     }
-    console.log(query);
+  
     const subscriptions = await this.subscriptionModel.find(query);
     return subscriptions;
   }
@@ -90,6 +90,7 @@ export class DbService {
     let pemissionToSend = false;
     const subscriptions = await this.getSubscriptions(null, driverid);
     pemissionToSend = subscriptions.length > 0;
+
     for (let i = 0; i < points.length; i++) {
       const pointToSave = new this.pointModel(points[i]);
       pointToSave.index = h3.geoToH3(
@@ -100,17 +101,15 @@ export class DbService {
       pointToSave.phoneDate = points[i].time;
       pointToSave.driverId = driverid;
       pointToSave.serverDate = new Date();
-      console.log(pointToSave);
+      //
       if (pemissionToSend) {
         this.PublishPosition(pointToSave, subscriptions);
+       
       }
-     
+      //
       result.push(await pointToSave.save());
-      
     }
     return result;
-
-    
   }
 
   async GetDriverPositions(driverId: number,startDate: string,endDate: string,): Promise<Point[]> {
@@ -137,7 +136,6 @@ export class DbService {
   }
 
   private async PublishPosition(point: Point, subscriptions: Subscription[]) {
-    console.log(typeof this.client);
     await this.client
       .emit('tracking.follower.position', {
         data: point,

@@ -17,7 +17,7 @@ export class FollowController {
 
     @Get() 
     async getSubscriptions( @Query('follower_id') followerId:number, @Query('publisher_id') publisherId:number){
-        console.log(`${followerId}, ${publisherId}`);
+    
         const existingSubscriptions = await this.followSvc.getSubscriptions(followerId, publisherId);
         const data = [];
         for(let i = 0;i<existingSubscriptions.length; i++){
@@ -34,7 +34,7 @@ export class FollowController {
         if(typeof followerId !== 'number' || typeof publisherId !== 'number' ){
             return new BadRequestException();
         }
-        console.log(`${followerId}, ${publisherId}`);
+
         const createdSubscription = await this.followSvc.createSubscription(followerId, publisherId);
         // eslint-disable-next-line @typescript-eslint/camelcase
         return { data: { id: createdSubscription._id, follower_id: createdSubscription.followerId, publisher_id: createdSubscription.publisherId} };

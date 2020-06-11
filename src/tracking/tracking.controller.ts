@@ -21,6 +21,8 @@ import { Roles } from 'cityride-auth/dist/auth/roles.decorator'
 import { Usr } from 'cityride-auth/dist/auth/user.decorator'
 import { isISO8601, isValidationOptions, Validator } from 'class-validator';
 import { exception } from 'console';
+import { stat } from 'fs';
+import { start } from 'repl';
 
 
 @Controller('tracking')
@@ -45,23 +47,23 @@ export class TrackingController {
   @Get('locations') // localhost:3001/tracking/location
   async GetDriverPositions(@Usr() user:any, @Query('driver_id') driverId:number, @Query('start_date') startDate:string, @Query('end_date') endDate:string) {
     //v3
-    const start_date = isISO8601(startDate, isValidationOptions.apply(true));
-    const end_date = isISO8601(endDate, isValidationOptions.apply(true));
-
-    if(!start_date){
-      throw new BadRequestException(`start_date: ${startDate} - must be a valid ISO 8601 date string `);
+    if(typeof startDate !== 'undefined'){
+      if(!isISO8601(startDate, isValidationOptions.apply(true))){
+        throw new BadRequestException(`start_date: ${startDate} - must be a valid ISO 8601 date string `);
+      }
+    }  
+    if(typeof endDate !== 'undefined'){
+      if(!isISO8601(endDate, isValidationOptions.apply(true))){
+        throw new BadRequestException(`end_date: ${endDate} - must be a valid ISO 8601 date string `);
+      }
     }
-    if(!end_date){
-      throw new BadRequestException(`end_date: ${end_date} - must be a valid ISO 8601 date string `);
-    }
-
-
+   
     return { data: await this.trackingSvc.GetDriverPositions(driverId, startDate, endDate) };
     // v2
     const dbPoints =  await this.trackingSvc.GetDriverPositions(driverId, startDate, endDate);
     const temp = { data: [] };
     temp.data = dbPoints;
-    console.log(temp); 
+
     return temp;
     // v1
     const dbPoints2 =  await this.trackingSvc.GetDriverPositions(driverId, startDate, endDate);
@@ -76,8 +78,6 @@ export class TrackingController {
   // async getSubscriptionRedis(driverId: number) : Promise<GeoPointDTO[]> {
       
   //     const points: GeoPointDTO[] = [];
-      
-  //     console.log(`: ${'as'}`);
 
   //     return points;
   // }
