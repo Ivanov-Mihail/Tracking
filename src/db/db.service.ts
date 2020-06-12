@@ -1,31 +1,21 @@
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import * as h3 from 'h3-js';
-import { GeoPointDTO } from './dto/geo_point.dto';
 import { Point } from './interfaces/point.interface';
 import { Injectable } from '@nestjs/common/decorators/core/injectable.decorator';
 import { BadRequestException, Logger, NotFoundException } from '@nestjs/common';
 import { Subscription } from './interfaces/subscribtion.inteface';
 import { Types } from 'mongoose';
-import { ClientProxyFactory } from '@nestjs/microservices/';
-import { Transport } from '@nestjs/microservices';
+
 
 @Injectable()
 export class DbService {
   private readonly logger: Logger = new Logger('TrackingController', false);
   
-  client: any;
-
   constructor(
     @InjectModel('Subscription') private subscriptionModel: Model<Subscription>,
     @InjectModel('Point') private pointModel: Model<Point>,
-  ) {
-    this.client = ClientProxyFactory.create({
-      transport: Transport.REDIS,
-      options: {
-        url: process.env.REDIS_URL,
-      },
-    });
+  ) { 
+    
   }
 
   //#region Follow.Controller
@@ -84,32 +74,9 @@ export class DbService {
   }
   //#endregion
 
-  //#region Tracking.Controller
-  async SaveDriverPositions(points: GeoPointDTO[], driverid: number): Promise<Point[]> {
-    const result:Point[]=[];
-    let pemissionToSend = false;
-    const subscriptions = await this.getSubscriptions(null, driverid);
-    pemissionToSend = subscriptions.length > 0;
-
-    for (let i = 0; i < points.length; i++) {
-      const pointToSave = new this.pointModel(points[i]);
-      pointToSave.index = h3.geoToH3(
-        pointToSave.latitude,
-        pointToSave.longitude,
-        7,
-      );
-      pointToSave.phoneDate = points[i].time;
-      pointToSave.driverId = driverid;
-      pointToSave.serverDate = new Date();
-      //
-      if (pemissionToSend) {
-        this.PublishPosition(pointToSave, subscriptions);
-       
-      }
-      //
-      result.push(await pointToSave.save());
-    }
-    return result;
+  //#region Save points from users
+  async SaveDriverPositions(point:Point){
+    await point.save();
   }
 
   async GetDriverPositions(driverId: number,startDate: string,endDate: string,): Promise<Point[]> {
@@ -135,14 +102,5 @@ export class DbService {
     return result;
   }
 
-  private async PublishPosition(point: Point, subscriptions: Subscription[]) {
-    await this.client
-      .emit('tracking.follower.position', {
-        data: point,
-        ids: subscriptions,
-        from: 'tracking-service',
-      })
-      .toPromise();
-  }
   //#endregion
 }

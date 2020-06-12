@@ -5,24 +5,18 @@ import {
   Get,
   UseGuards,
   Query,
-  UsePipes,
-  ValidationPipe,
   ParseArrayPipe,
   BadRequestException,
 } from '@nestjs/common';
 import { GeoPointDTO } from 'src/db/dto/geo_point.dto';
 import { TrackingService } from './tracking.service';
-import { Point } from 'src/db/interfaces/point.interface';
 import { AuthGuard } from 'cityride-auth/dist/auth/auth.guard'
 import { RolesGuard } from 'cityride-auth/dist/auth/roles.guard'
 import { PermissionsGuard } from 'cityride-auth/dist/auth/permissions.guard'
 import { Permissions } from 'cityride-auth/dist/auth/permissions.decorator'
 import { Roles } from 'cityride-auth/dist/auth/roles.decorator'
 import { Usr } from 'cityride-auth/dist/auth/user.decorator'
-import { isISO8601, isValidationOptions, Validator } from 'class-validator';
-import { exception } from 'console';
-import { stat } from 'fs';
-import { start } from 'repl';
+import { isISO8601, isValidationOptions } from 'class-validator';
 
 
 @Controller('tracking')

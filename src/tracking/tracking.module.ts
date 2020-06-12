@@ -5,9 +5,19 @@ import { TrackingService } from './tracking.service';
 import { TrackingController } from './tracking.controller';
 import { AuthModule } from 'cityride-auth/dist/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { SubscriptionSchema } from 'src/db/schema/subscribtion.schema';
+import { SubscriberSchema } from 'src/db/schema/subscriber.schema';
+import { PointSchema } from 'src/db/schema/point.schema';
 
 @Module({
   imports: [
+   
+    MongooseModule.forFeature([
+      { name: 'Subscription', schema: SubscriptionSchema },
+      { name: 'Point', schema: PointSchema },
+      {name: 'Subscriber', schema: SubscriberSchema },
+    ],),
     ConfigModule.forRoot(),
     ClientsModule.register([
       {
