@@ -33,6 +33,7 @@ export class TrackingController {
   @Permissions()
   @Post('locations') // localhost:3001/tracking/location
   async SaveDriverReport(@Usr() user:any, @Body('data',new ParseArrayPipe({items:GeoPointDTO})) locations: GeoPointDTO[]){
+    console.log(user);
     return { data: await this.trackingSvc.SaveDriverPositions(locations, user.id) };
   }
 
