@@ -7,12 +7,12 @@ export class UberH3Controller {
     constructor(private uberSvc: UberH3Service) {}
 
     @Post()
-    CreateIndex( @Body('lat') lat: number, @Body('lon') lon:number, @Body('zoom') zoom:number){
-        console.log(lat, lon, zoom);
+    CreateIndex(@Body('lat') lat: number, 
+                @Body('lon') lon:number, 
+                @Body('zoom') zoom:number)
+    {
         const index = this.uberSvc.CreateIndex(lat,lon,zoom);
-
-        console.log(index);
-         return {data:index};
+        return { data: {index: index} };
     }
         
 }

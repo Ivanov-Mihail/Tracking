@@ -5,8 +5,6 @@ import * as h3 from 'h3-js';
 export class UberH3Service {
 
     CreateIndex( lat: number, lon:number, zoom:number){    
-        const index: string = h3.geoToH3(lat, lon, zoom);
-        console.log(index);
-        return index;
+        return h3.geoToH3(lat, lon, zoom);
     }
 }
