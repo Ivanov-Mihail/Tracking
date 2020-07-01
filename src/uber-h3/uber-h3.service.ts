@@ -3,8 +3,48 @@ import * as h3 from 'h3-js';
 
 @Injectable()
 export class UberH3Service {
+  // CR-505 [NODE] H3 web service
+  // Базовое создание индекса
+  CreateIndex(lat: number, lon: number, zoom: number) {
+    return h3.geoToH3(lat, lon, zoom);
+  }
 
-    CreateIndex( lat: number, lon:number, zoom:number){    
-        return h3.geoToH3(lat, lon, zoom);
-    }
+  // Обратный геокодинк из "клетки" в координаты
+  ReverseH3ToGeo(h3Index: string) {
+    const position: number[] = h3.h3ToGeo(h3Index);
+    return position;
+  }
+
+  // Расстояние между "клетками"
+  GetDistanceBetweenHexagons(origin: string, destination: string) {
+    const distance: number = h3.h3Distance(origin, destination);
+    return distance;
+  }
+
+  // CR-505 [NODE] H3 web service
+  // Получить ближайшие клетки
+  // Пользователь - загрузив свою локацию - делает подзапрос - для получения соседених локаций
+  // Тем самым можно делать быстрое сопоставление - чтобы найти ближайших - водителей или клиентов
+  GetNeighbors(index: string, step: number) {
+    const indexNeighbors: string[] = h3.kRing(index, step);
+    return indexNeighbors;
+  }
+
+  // Полигон это масcив словарей(масивово)
+  //  [ [47.22, 28.55 ], [47.35, 28.50], [47.30, 28.45] ]
+  async SetPoligon(polygon: number[][], zoom: number) {
+    const hexagons = h3.polyfill(polygon, zoom);
+    return hexagons;
+  }
+
+  SetMultiPoligon(hexagons) {
+    const coordinates = h3.h3SetToMultiPolygon(hexagons, true);
+    // -> [[[
+    //      [-122.37681938644465, 37.76546768434345],
+    //      [-122.3856345540363, 37.776004200673846],
+    //      ...
+    //    ]]]
+
+    return coordinates;
+  }
 }
