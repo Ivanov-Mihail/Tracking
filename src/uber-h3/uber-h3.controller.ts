@@ -16,13 +16,16 @@ export class UberH3Controller {
   }
 
   @Post('reverse')
-  ReverseH3ToGeo(h3Index: string) {
+  ReverseH3ToGeo(@Body('h3Index') h3Index: string) {
     const response = this.uberSvc.ReverseH3ToGeo(h3Index);
     return { data: { coordinates: response } };
   }
 
   @Post('distance')
-  GetDistanceBetweenHexagons(@Body()origin: string, destination: string) {
+  GetDistanceBetweenHexagons(
+    @Body('origin') origin: string,
+    @Body('destination') destination: string,
+  ) {
     const response = this.uberSvc.GetDistanceBetweenHexagons(
       origin,
       destination,
@@ -31,27 +34,33 @@ export class UberH3Controller {
   }
 
   @Post('neighbors')
-  GetNeighbors(index: string, ringSize: number) {
+  GetNeighbors(
+    @Body('index') index: string,
+    @Body('ringSize') ringSize: number,
+  ) {
     console.log(index, ringSize);
     const response = this.uberSvc.GetNeighbors(index, ringSize);
     return { data: { neighborsHexagons: response } };
   }
 
-
-  @Post('poligon')  // Вот тут интерсно разобраться - какую фигуру можно задать координатами.
-  SetPoligon(@Body('zoom') zoom: number, @Body('coordinates') coordinates: number[][], @Body('type') type: string) {
-
+  @Post('poligon') // Вот тут интерсно разобраться - какую фигуру можно задать координатами.
+  SetPoligon(
+    @Body('zoom') zoom: number,
+    @Body('coordinates') coordinates: number[][],
+    @Body('type') type: string,
+  ) {
     const polygon = [
-        [47.8133, 27.4089],
-        [47.7198, 27.3544],
-        [47.8151, 27.4798]
+      [47.8133, 27.4089],
+      [47.7198, 27.3544],
+      [47.8151, 27.4798],
     ];
+
     const response = this.uberSvc.SetPoligon(coordinates, zoom);
     return { data: { poligon: response } };
   }
 
   @Post('multi/poligon')
-  SetMultiPoligon(hexagons) {
+  SetMultiPoligon(@Body('hexagons') hexagons) {
     const response = this.uberSvc.SetMultiPoligon(hexagons);
     return { data: { distance: response } };
   }

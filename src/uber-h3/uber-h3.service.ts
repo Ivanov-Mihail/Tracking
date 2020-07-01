@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as h3 from 'h3-js';
 
 @Injectable()
@@ -11,7 +11,10 @@ export class UberH3Service {
 
   // Обратный геокодинк из "клетки" в координаты
   ReverseH3ToGeo(h3Index: string) {
+    console.log(h3Index);
+    
     const position: number[] = h3.h3ToGeo(h3Index);
+    console.log(position);
     return position;
   }
 
