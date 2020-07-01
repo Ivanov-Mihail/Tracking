@@ -11,10 +11,7 @@ export class UberH3Service {
 
   // Обратный геокодинк из "клетки" в координаты
   ReverseH3ToGeo(h3Index: string) {
-    console.log(h3Index);
-    
     const position: number[] = h3.h3ToGeo(h3Index);
-    console.log(position);
     return position;
   }
 
@@ -35,9 +32,9 @@ export class UberH3Service {
 
   // Полигон это масcив словарей(масивово)
   //  [ [47.22, 28.55 ], [47.35, 28.50], [47.30, 28.45] ]
-  async SetPoligon(polygon: number[][], zoom: number) {
-    const hexagons = h3.polyfill(polygon, zoom);
-    return hexagons;
+   SetPoligon(polygon: number[][], zoom: number){
+    const hexagons =  h3.polyfill(polygon, zoom);
+    return  hexagons;
   }
 
   SetMultiPoligon(hexagons) {
