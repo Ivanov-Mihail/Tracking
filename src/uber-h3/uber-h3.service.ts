@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import * as h3 from 'h3-js';
+import { handleRetry } from '@nestjs/mongoose/dist/common/mongoose.utils';
 
 @Injectable()
 export class UberH3Service {
@@ -9,7 +10,7 @@ export class UberH3Service {
     return h3.geoToH3(lat, lon, zoom);
   }
 
-  // Обратный геокодинк из "клетки" в координаты
+  // Обратный геокодиг из "клетки" в координаты
   ReverseH3ToGeo(h3Index: string) {
     const position: number[] = h3.h3ToGeo(h3Index);
     return position;
@@ -30,10 +31,21 @@ export class UberH3Service {
     return indexNeighbors;
   }
 
-  // Полигон это масcив словарей(масивово)
+  // Полигон это масcив словарей(масивов)
   //  [ [47.22, 28.55 ], [47.35, 28.50], [47.30, 28.45] ]
    SetPoligon(polygon: number[][], zoom: number){
-    const hexagons =  h3.polyfill(polygon, zoom);
+     
+    console.log("-------------------------- POLYFILL");
+    const hexagons =  h3.polyfill(polygon, zoom, true);
+     
+    console.log(hexagons.length);
+    console.log(hexagons);
+    // let page: number;
+    // for(let i = 1000; i>0; i--){
+    //   hexagons[i]
+    // }
+
+
     return  hexagons;
   }
 

@@ -56,7 +56,9 @@ export class UberH3Controller {
     //   [47.8151, 27.4798],
     // ];
 
+    console.log(zoom, coordinates, type);
     const response = this.uberSvc.SetPoligon(coordinates, zoom);
+    console.log(response);
     return { data: { poligon: response } };
   }
 
