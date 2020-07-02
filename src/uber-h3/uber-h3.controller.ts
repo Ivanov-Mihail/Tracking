@@ -67,4 +67,12 @@ export class UberH3Controller {
     const response = this.uberSvc.SetMultiPoligon(hexagons);
     return { data: { distance: response } };
   }
+
+
+  @Post('parent')
+  GetParentIndex(@Body('h3Index') h3Index: string, @Body() zoom: number){
+    const response = this.uberSvc.GetParentIndex(h3Index, zoom);
+    return { data: { parent: response } };
+  }
+
 }

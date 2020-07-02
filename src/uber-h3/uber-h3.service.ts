@@ -33,24 +33,32 @@ export class UberH3Service {
 
   // Полигон это масcив словарей(масивов)
   //  [ [47.22, 28.55 ], [47.35, 28.50], [47.30, 28.45] ]
-   SetPoligon(polygon: number[][], zoom: number){
-     
-    console.log("-------------------------- POLYFILL");
-    const hexagons =  h3.polyfill(polygon, zoom, true);
-     
+  SetPoligon(polygon: number[][], zoom: number) {
+    console.log('-------------------------- POLYFILL');
+    const hexagons = h3.polyfill(polygon, zoom, true);
+
     console.log(hexagons.length);
     console.log(hexagons);
+
+    if (hexagons.length > 1000) {
+      let counter = 0;
+      if (counter % 1000 == 0) {
+        counter++;
+      }
+    }
+
     // let page: number;
     // for(let i = 1000; i>0; i--){
     //   hexagons[i]
     // }
 
-
-    return  hexagons;
+    return hexagons;
   }
 
   SetMultiPoligon(hexagons) {
+    console.log(hexagons);
     const coordinates = h3.h3SetToMultiPolygon(hexagons, true);
+
     // -> [[[
     //      [-122.37681938644465, 37.76546768434345],
     //      [-122.3856345540363, 37.776004200673846],
@@ -58,5 +66,10 @@ export class UberH3Service {
     //    ]]]
 
     return coordinates;
+  }
+
+  GetParentIndex(h3Index:string, zoom: number) {
+    const parentIndex = h3.h3ToParent(h3Index, zoom);
+    return parentIndex;
   }
 }
