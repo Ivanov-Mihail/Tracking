@@ -70,7 +70,7 @@ export class UberH3Controller {
 
 
   @Post('parent')
-  GetParentIndex(@Body('h3Index') h3Index: string, @Body() zoom: number){
+  GetParentIndex(@Body('h3Index') h3Index: string, @Body('zoom') zoom: number){
     const response = this.uberSvc.GetParentIndex(h3Index, zoom);
     return { data: { parent: response } };
   }
