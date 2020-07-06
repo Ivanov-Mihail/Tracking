@@ -72,4 +72,17 @@ export class UberH3Service {
     const parentIndex = h3.h3ToParent(h3Index, zoom);
     return parentIndex;
   }
+
+
+
+  GetArrayOfPoints(Points){
+    const arrayOfIndexes = [];
+
+      Points.forEach(element => {
+        const index = this.CreateIndex(element.latitude, element.longitude, element.zoom);
+        arrayOfIndexes.push(index);
+      });
+
+      return arrayOfIndexes;
+  }
 }

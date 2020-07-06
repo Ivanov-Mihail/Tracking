@@ -43,7 +43,7 @@ export class UberH3Controller {
     return { data: { neighborsHexagons: response } };
   }
 
-  @Post('poligon') // Вот тут интерсно разобраться - какую фигуру можно задать координатами.
+  @Post('polygon') // Вот тут интерсно разобраться - какую фигуру можно задать координатами.
   SetPoligon(
     @Body('zoom') zoom: number,
     @Body('coordinates') coordinates: number[][],
@@ -59,10 +59,10 @@ export class UberH3Controller {
     console.log(zoom, coordinates, type);
     const response = this.uberSvc.SetPoligon(coordinates, zoom);
     console.log(response);
-    return { data: { poligon: response } };
+    return { data: { polygon: response } };
   }
 
-  @Post('multi/poligon')
+  @Post('multi/polygon')
   SetMultiPoligon(@Body('hexagons') hexagons) {
     const response = this.uberSvc.SetMultiPoligon(hexagons);
     return { data: { distance: response } };
@@ -74,5 +74,14 @@ export class UberH3Controller {
     const response = this.uberSvc.GetParentIndex(h3Index, zoom);
     return { data: { parent: response } };
   }
+
+
+  @Post('points')
+  GetPointsFromIndexes(@Body('points') points){
+    const response = this.uberSvc.GetArrayOfPoints(points);
+    return { data: { indexes: response } };
+
+  }
+  
 
 }
