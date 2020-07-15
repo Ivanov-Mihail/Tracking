@@ -38,7 +38,6 @@ export class UberH3Controller {
     @Body('index') index: string,
     @Body('ringSize') ringSize: number,
   ) {
-    console.log(index, ringSize);
     const response = this.uberSvc.GetNeighbors(index, ringSize);
     return { data: { neighborsHexagons: response } };
   }
@@ -49,16 +48,7 @@ export class UberH3Controller {
     @Body('coordinates') coordinates: number[][],
     @Body('type') type: string,
   ) {
-
-    // const polygon = [
-    //   [47.8133, 27.4089],
-    //   [47.7198, 27.3544],
-    //   [47.8151, 27.4798],
-    // ];
-
-    console.log(zoom, coordinates, type);
     const response = this.uberSvc.SetPoligon(coordinates, zoom);
-    console.log(response);
     return { data: { polygon: response } };
   }
 
@@ -82,6 +72,5 @@ export class UberH3Controller {
     return { data: { indexes: response } };
 
   }
-  
 
 }

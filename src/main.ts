@@ -8,8 +8,8 @@ async function bootstrap() {
 
   app.use(compression());
 
-  console.log(`APP_DB_CONNECTION   =`, process.env.APP_DB_CONNECTION.toLocaleUpperCase());
-  console.log(`REDIS_URL           =`, process.env.REDIS_URL.toLocaleUpperCase());
+  //console.log(`APP_DB_CONNECTION   =`, process.env.APP_DB_CONNECTION.toLocaleUpperCase());
+  //console.log(`REDIS_URL           =`, process.env.REDIS_URL.toLocaleUpperCase());
 
   await app.startAllMicroservicesAsync();
   await app.listen(3001);

@@ -10,11 +10,11 @@ import { UberH3Module } from './uber-h3/uber-h3.module';
 
 @Module({
   imports: [  
-    DbModule,
-    TrackingModule,
-    ConfigModule.forRoot(),
-    MongooseModule.forRoot(process.env.APP_DB_CONNECTION),
-    FollowModule,
+    //DbModule,                                                       // uncomment all to TURN ON (Tracking + MongoDB)
+    //TrackingModule,
+    //ConfigModule.forRoot(),
+    //MongooseModule.forRoot(process.env.APP_DB_CONNECTION),
+    //FollowModule,
     UberH3Module,
   ],
   controllers: [],

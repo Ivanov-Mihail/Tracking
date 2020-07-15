@@ -34,12 +34,7 @@ export class UberH3Service {
   // Полигон это масcив словарей(масивов)
   //  [ [47.22, 28.55 ], [47.35, 28.50], [47.30, 28.45] ]
   SetPoligon(polygon: number[][], zoom: number) {
-    console.log('-------------------------- POLYFILL');
     const hexagons = h3.polyfill(polygon, zoom, true);
-
-    console.log(hexagons.length);
-    console.log(hexagons);
-
     if (hexagons.length > 1000) {
       let counter = 0;
       if (counter % 1000 == 0) {
